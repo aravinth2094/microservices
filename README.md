@@ -12,8 +12,8 @@ Git clone this project and import it's child projects into your IDE and start wo
 * Proxy Service
 
 ## Requirements
-Java 8
-MySQL
+* Java 8
+* MySQL
 
 ## Technologies used
 * Spring boot
