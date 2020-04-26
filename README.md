@@ -23,7 +23,7 @@ Git clone this project and import it's child projects into your IDE and start wo
 * Zuul Proxy
 * Spring Cloud OAuth2.0
 * Spring Cloud Config Server
-* Sprint Cloud Config Client
+* Spring Cloud Config Client
 
 ## Roadmap
 * UI Service with ReactJS
