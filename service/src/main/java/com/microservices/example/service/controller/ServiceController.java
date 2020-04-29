@@ -36,7 +36,7 @@ public class ServiceController {
 	}
 
 	@GetMapping("/userinfo")
-	@PreAuthorize("#oauth2.hasScope('profile')")
+	@PreAuthorize("#oauth2.hasScope('profile') and hasAnyRole('ADMIN', 'USER')")
 	public Principal userInfo(Principal principal) {
 		return principal;
 	}
