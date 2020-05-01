@@ -1,4 +1,4 @@
-package com.microservices.example.service;
+package com.microservices.example.ocrservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

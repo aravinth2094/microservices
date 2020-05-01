@@ -1,4 +1,4 @@
-package com.microservices.example.service;
+package com.microservices.example.ocrservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

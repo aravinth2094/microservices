@@ -29,9 +29,9 @@ additional_information,
 autoapprove)
 VALUES
 ('myclientid',
-'Service',
+'OCRService',
 '$2y$12$4uk/FFVSTcLgrs0ck2bRJulurP2TJcRdhwDMe9XQigvr2c4zoaKDC',
-'greet,profile',
+'greet,profile,upload',
 'authorization_code,password,implicit,refresh_token',
 'http://localhost:8049',
 'ROLE_ADMIN,ROLE_USER',

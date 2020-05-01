@@ -9,10 +9,10 @@
   
   <modules>
      <module>discovery</module>
-     <module>oauthserver</module>
-     <module>proxy</module>
-     <module>service</module>
      <module>configserver</module>
+     <module>proxy</module>
+     <module>oauthserver</module>
+     <module>ocrservice</module>
    </modules>
    
 </project>
