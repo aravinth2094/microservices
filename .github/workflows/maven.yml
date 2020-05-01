@@ -13,14 +13,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        ports:
-        - 32574:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v2
@@ -28,13 +20,17 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Verify MySQL connection from container
-      run: |
-        apt-get update
-        apt-get install -y mysql-client
-        mysql --host mydb -uroot -ppassword -e "SHOW DATABASES"
-    - name: Setup Runner Database
-      run: |
-        mysql -uroot -h127.0.0.1 -ppassword -e 'CREATE DATABASE IF NOT EXISTS test_app;'
+    - name: Setup MySQL
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 3306 # Optional, default value is 3306. The port of host
+        container port: 3307 # Optional, default value is 3306. The port of container
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mysql version: 'latest' # Optional, default value is "latest". The version of the MySQL
+        mysql database: 'test_app' # Optional, default value is "test". The specified database which will be create
+        mysql root password: 'password' # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: 'password' # Required if "mysql user" exists. The password for the "mysql user"'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
