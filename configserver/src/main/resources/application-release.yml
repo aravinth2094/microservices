@@ -3,4 +3,4 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/config
+          uri: https://github.com/aravinth2094/config

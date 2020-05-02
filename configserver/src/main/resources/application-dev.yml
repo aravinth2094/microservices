@@ -3,4 +3,4 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/workspace-spring-tool-suite-4-4.6.0.RELEASE/microservices/config
+          uri: https://github.com/aravinth2094/config

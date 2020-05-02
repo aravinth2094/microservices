@@ -10,11 +10,3 @@ spring:
       discovery:
         enabled: true
         service-id: ConfigServer
-  datasource:
-    url: jdbc:mysql://localhost:3306/test_app
-    username: root
-    password: password
-    initialization-mode: always
-  jpa:
-    hibernate:
-      ddl-auto: none
