@@ -61,4 +61,4 @@ jobs:
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        path: microservices/**/target/*.jar
+        path: /home/runner/work/microservices/microservices/**/target/*.jar
