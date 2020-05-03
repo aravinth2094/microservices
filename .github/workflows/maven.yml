@@ -67,6 +67,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     name: Docker push
+    needs: [build]
     steps:
       - name: build-push
         uses: docker/build-push-action@v1
