@@ -1,0 +1,115 @@
+version: '3.3'
+services:
+    discovery:
+        build:
+            context: discovery
+            dockerfile: Dockerfile
+        image: discovery:latest
+        expose:
+            - 8761
+        ports:
+            - 8761:8761
+        environment:
+            - server.port=8761
+        networks:
+            - backend
+        logging:
+            driver: json-file
+        restart: on-failure
+    config-server:
+        build:
+            context: configserver
+            dockerfile: Dockerfile
+        image: config-server:latest
+        environment:
+          - eureka.client.service-url.default-zone=http://discovery:8761/eureka
+          - server.port=8787
+        entrypoint: java -jar /app.jar
+        expose:
+            - 8787
+        networks:
+            - backend
+        depends_on:
+            - discovery
+        logging:
+            driver: json-file
+        restart: on-failure
+    proxy:
+        build:
+            context: proxy
+            dockerfile: Dockerfile
+        image: proxy:latest
+        environment:
+          - eureka.client.service-url.default-zone=http://discovery:8761/eureka
+        entrypoint: java -jar /app.jar
+        expose:
+            - 8049
+        ports:
+            - 8049:8049
+        networks:
+            - backend
+            - frontend
+        depends_on:
+            - discovery
+            - config-server
+        logging:
+            driver: json-file
+        restart: on-failure
+    ocrservice:
+        build:
+            context: ocrservice
+            dockerfile: Dockerfile
+        image: ocrservice:latest
+        environment:
+          - eureka.client.service-url.default-zone=http://discovery:8761/eureka
+        entrypoint: java -jar /app.jar
+        expose:
+            - 8090
+        networks:
+            - backend
+            - frontend
+        depends_on:
+            - discovery
+            - config-server
+        logging:
+            driver: json-file
+        restart: on-failure
+    database-server:
+      image: mysql:8
+      expose:
+        - 33060
+      networks:
+        - backend
+        - database
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=test_app
+      restart: on-failure
+    oauthserver:
+        build:
+            context: oauthserver
+            dockerfile: Dockerfile
+        image: oauthserver:latest
+        environment:
+          - eureka.client.service-url.default-zone=http://discovery:8761/eureka
+          - spring.datasouce.url=jdbc:mysql://database-server:33060/test_app
+        entrypoint: java -jar /app.jar
+        expose:
+            - 9010
+        networks:
+            - backend
+            - database
+            - frontend
+        depends_on:
+            - discovery
+            - config-server
+        logging:
+            driver: json-file
+        restart: on-failure
+networks:
+    frontend:
+        driver: bridge
+    backend:
+        driver: bridge
+    database:
+        driver: bridge
