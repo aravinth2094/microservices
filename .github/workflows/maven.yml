@@ -23,8 +23,8 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - run: mvn -f pom.xml clean compile
-  build:
 
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -63,3 +63,15 @@ jobs:
       with:
         name: microservices
         path: /home/runner/work/microservices/microservices/**/target/*.jar
+
+  docker:
+    name: Docker push
+    steps:
+      ‐ name: build-push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: hub.docker.com
+          repository: aravinth2094/microservices
+          tags: latest
