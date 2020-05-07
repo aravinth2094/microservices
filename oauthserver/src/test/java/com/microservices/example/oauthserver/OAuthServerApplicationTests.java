@@ -1,16 +1,16 @@
 package com.microservices.example.oauthserver;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.SQLException;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
-import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
@@ -28,8 +28,12 @@ class OAuthServerApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
+	private static EntityManagerFactory entityManagerFactory;
+
 	@Autowired
-	private EntityManagerFactory entityManagerFactory;
+	private void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+		OAuthServerApplicationTests.entityManagerFactory = entityManagerFactory;
+	}
 
 	@Test
 	protected void obtainAccessTokenTest() throws Exception {
@@ -45,14 +49,27 @@ class OAuthServerApplicationTests {
 		assertNotNull(jsonParser.parseMap(resultString).get("access_token"));
 	}
 
-	@After("obtainAccessTokenTest")
-	protected void tearDown() throws SQLException {
+	@AfterAll
+	protected static void tearDown() {
 		EntityManager session = null;
+		EntityTransaction transaction = null;
 		try {
 			session = entityManagerFactory.createEntityManager();
-			session.createNativeQuery("delete from users where username like 'test_%'").executeUpdate();
+			transaction = session.getTransaction();
+			transaction.begin();
 			session.createNativeQuery("delete from authorities where username like 'test_%'").executeUpdate();
+			session.createNativeQuery("delete from users where username like 'test_%'").executeUpdate();
 			session.createNativeQuery("delete from oauth_client_details where client_id like 'test_%'").executeUpdate();
+			session.createNativeQuery("delete from oauth_refresh_token where token_id in ("
+					+ "select refresh_token from oauth_access_token where client_id like 'test_%'" + ")")
+					.executeUpdate();
+			session.createNativeQuery("delete from oauth_access_token where client_id like 'test_%'").executeUpdate();
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			fail(e);
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
