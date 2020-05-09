@@ -7,6 +7,8 @@ spring:
     name: OCRService
   cloud:
     config:
+      username: ${CONFIG_USERNAME:default}
+      password: ${CONFIG_PASSWORD:password}
       discovery:
         enabled: true
         service-id: ConfigServer
