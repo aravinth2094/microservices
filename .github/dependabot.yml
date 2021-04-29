@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: develop
+  ignore:
+  - dependency-name: org.springframework.boot:spring-boot-starter-parent
+    versions:
+    - 2.4.3
+    - 2.4.4
+  - dependency-name: org.springframework.cloud:spring-cloud-dependencies
+    versions:
+    - Hoxton.SR10
+  - dependency-name: io.pivotal.spring.cloud:spring-cloud-services-dependencies
+    versions:
+    - 3.2.0.RELEASE
